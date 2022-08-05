@@ -3,7 +3,13 @@ const Blog = require('../model/blog')
 const User = require('../model/user')
 const jwt = require('jsonwebtoken')
 
-blogRouter.get('/', async(_, response) => response.json(await Blog.find({}).populate('userId', {name: 1, username: 1})))
+blogRouter.get('/', async(request, response) => {
+    let token = request.get('Authorization')
+    if(!token) return response.json({Error: 'token missing or invalid'})
+    token = token.substring(7)
+    const usuario = jwt.verify(token, process.env.SECRET)
+    response.json(await Blog.find({userId: usuario.id}).populate('userId', {name: 1, username: 1}))
+})
 
 blogRouter.get('/:id', async(request, response) => response.json(await Blog.findById(request.params.id)))
 

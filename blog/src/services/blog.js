@@ -13,11 +13,17 @@ const agregarBlog = async blog => {
     const config = {
         headers: {Authorization: token}
     }
-    const res = axios.post(baseUrl, blog, config)
+    const res = await axios.post(baseUrl, blog, config)
     return res.data
 }
 
-const getAll = () => axios.get(baseUrl).then(res => res.data)
+const getAll = async() => {
+    const config = {
+        headers: {Authorization: token}
+    }
+    const res = await axios.get(baseUrl, config)
+    return res.data
+}
 
 const getById = id => axios.get(`${baseUrl}/${id}`).then(res => res.data)
 

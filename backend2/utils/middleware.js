@@ -6,7 +6,7 @@ const errorHandler = (error, request, response, next) => {
     else{
         logger.error(error)
     }
-    next(error)
+    logger.error(error)
 }
 
 const unknownEndpoint = (request, response) => {

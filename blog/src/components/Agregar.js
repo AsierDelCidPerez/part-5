@@ -16,7 +16,7 @@ const Agregar = ({blogs, setBlogs, notifications}) => {
     const getMyEscritura = tipo => event => {
         const nuevoObj = {...fields}
         nuevoObj[tipo] = event.target.value
-        console.log(nuevoObj)
+        // console.log(nuevoObj)
         setFields(nuevoObj)
     }
 
@@ -39,7 +39,7 @@ const Agregar = ({blogs, setBlogs, notifications}) => {
         return resultado
     }
 
-    const agregarBlog = event => {
+    const agregarBlog = async event => {
         event.preventDefault()
         if(validar()){
             const existencia = existe(fields.title)
@@ -51,12 +51,14 @@ const Agregar = ({blogs, setBlogs, notifications}) => {
                 }).catch(err => generarNotification(`Error: ${err.message}`, false))
                 }
             }else{
-                blogService.agregarBlog(fields)
-                            .then(res => {
-                                generarNotification(`El blog '${res.title}' se ha agregado exitósamente`, true)
-                                setBlogs(blogs.concat(res))
-                            })
-                            .catch(err => generarNotification(`Ha ocurrido un error: ${err.message}`), false)
+                try{
+                    const newBlog = await blogService.agregarBlog(fields)
+                    console.log(newBlog)
+                    generarNotification(`El blog ha sido agregado exitósamente`, true)
+                    setBlogs(blogs.concat(newBlog))
+                }catch(exception){
+                    generarNotification(`Error: ${exception.message}`, false)
+                }
             }
         }
     }
