@@ -7,25 +7,19 @@ import Filtro from './components/Filtro';
 import blogService from './services/blog';
 import Notification from './components/Notification';
 import Agregar from './components/Agregar';
+import BlogForm from './components/BlogForm';
+import LoginForm from './components/LoginForm';
 
 function App() {
+  const [user, setUser] = useState(null)
 
-  const [blogs, setBlogs] = useState([])
-  const [notification, setNotification] = useState({
-    text: null, isSuccess: true
-  })
-
-  useEffect(() => {
-    blogService.getAll().then(res => setBlogs(res))
-  }, [])
+  const blogForm = () => <BlogForm/>
+  const loginForm = () => <LoginForm/>
 
   return (
     <div>
-      <Titulo text="Banco de blogs"/>
-      <Notification text={notification.text} isSuccess={notification.isSuccess}/>
-      <Filtro blogs={blogs} setBlogs={setBlogs}/>
-      <Registro blogs={blogs} setBlogs={setBlogs} notifications={setNotification}/>
-      <Agregar blogs={blogs} setBlogs={setBlogs} notifications={setNotification}/>
+      {user === null && loginForm()}
+      {user !== null && blogForm()}
     </div>
   );
 }

@@ -54,7 +54,7 @@ notesRouter.get('/', async (req, response) => {
         response.status(401).json({error: 'token missing or invalid'})
     }
     const notes = await Note.find({user: obj.id}) */
-    const notes = await Note.find({}).populate('users')
+    const notes = await Note.find({}).populate('user')
     response.json(notes)
 })
 

@@ -1,6 +1,12 @@
 import axios from 'axios'
 const baseUrl = '/api/notes'
 
+let token = null;
+
+const setToken = newToken => {
+    token = `bearer ${newToken}`
+}
+
 const getAll = () => {
     const nonExisting = {
         id: 1000,
@@ -10,11 +16,16 @@ const getAll = () => {
     }
     return axios.get(baseUrl).then(response => response.data.concat(nonExisting))
 }
-const create = (newObject, notification) => axios.post(baseUrl, newObject).then(response => response.data).catch(err => {
-    notification({})
-})
+const create = async newObject => {
+    const config = {
+        headers: {
+            "Authorization": token
+        }
+    }
+    const response = await axios.post(baseUrl, newObject, config)
+    return response.data
+}
 const update = (id, newObject) => axios.put(`${baseUrl}/${id}`, newObject).then(response => response.data)
 
-const exported = {getAll, create, update}
 
-export default exported
+export default {getAll, create, update, setToken}
