@@ -12,12 +12,25 @@ import LoginForm from './components/LoginForm';
 
 function App() {
   const [user, setUser] = useState(null)
+  const [notification, setNotification] = useState({
+    text: null, isSuccess: true
+  })
 
-  const blogForm = () => <BlogForm/>
-  const loginForm = () => <LoginForm/>
+  useEffect(() => {
+    const usuario = window.localStorage.getItem('BlogappUserLogin')
+    if(usuario){
+      const user = JSON.parse(usuario)
+      setUser(user)
+      blogService.setToken(user.token)
+    }
+  })
+
+  const blogForm = () => <BlogForm setNotification={setNotification}/>
+  const loginForm = () => <LoginForm setUsuario={setUser} setNotification={setNotification}/>
 
   return (
     <div>
+      <Notification text={notification.text} isSuccess={notification.isSuccess}/>
       {user === null && loginForm()}
       {user !== null && blogForm()}
     </div>

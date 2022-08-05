@@ -37,8 +37,10 @@ blogRouter.put('/:id', async(request, response) => {
 
 blogRouter.post('/', async(request, response) => {
     const body = request.body
-    if(!request.token) return response.status(400).json({error: 'Token missing or invalid'})
-    const obj = jwt.verify(request.token, process.env.SECRET)
+    let token = request.get('Authorization')
+    if(!token) return response.status(400).json({error: 'Token missing or invalid'})
+    token = token.substring(7)
+    const obj = jwt.verify(token, process.env.SECRET)
     const user = await User.findById(obj.id)
     if(!body.author && !body.title) return response.status(400).json({error: 'Author and title are REQUIRED fields'})
     if(!body.likes) body.likes = "0"
