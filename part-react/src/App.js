@@ -1,24 +1,24 @@
 import logo from './logo.svg';
 import './App.css';
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import Note from './components/Note';
 import noteService from './services/notes'
 import Notification from './components/Notification'
 import Footer from './components/Footer'
 import loginService from './services/loginService'
+import LoginForm from './components/LoginForm';
+import Togglable from './components/Togglable';
+import NoteForm from './components/NoteForm';
 
 const App = () => {
   const [notes, setNotes] = useState([]);
-  const [newNote, setNewNote] = useState({
-    text : "a new note...",
-    important : false
-  });
   const [userFields, setUserField] = useState({
     username: '', password: ''
   })
   const [user, setUser] = useState(null)
-  const [showAll, setShowAll] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null)
+  const [showAll, setShowAll] = useState(true);
+  const [loginVisible, setLoginVisible] = useState(false)
 
   useEffect(() => {
     noteService.getAll()
@@ -35,13 +35,6 @@ const App = () => {
 
   const notesToShow = showAll ? notes : notes.filter(note => note.important===true)
 
-  const actualizaImportancia = event => {
-    setNewNote({
-      ...newNote, 
-      important: event.target.checked
-    })
-  }
-
   const toggleImportance = id => {
     const note = notes.find(note => note.id === id)
     const changedNote = {
@@ -57,28 +50,6 @@ const App = () => {
             setTimeout(() => setErrorMessage(null), 5000)
             setNotes(notes.filter(myNote => myNote.id !== id))
           })
-  }
-
-  const actualizarNewNote = event => {
-    setNewNote({
-      ...newNote,
-      text : event.target.value
-    });
-  }
-  const actualizaPreferencias = event => {
-    event.preventDefault();
-    setShowAll(!showAll);
-  }
-  const addNote = event => {
-    event.preventDefault();
-    const noteObj = {
-      content: newNote.text,
-      date: new Date().toString(),
-      important: newNote.important,
-    };
-    noteService.create(noteObj)
-        .then(response => setNotes(notes.concat(response)));
-    setNewNote("a new note...");
   }
 
   const actualizarUserFields = tipo => event => setUserField({
@@ -101,15 +72,30 @@ const App = () => {
     }
     console.log(user)
   }
-  
 
-  const loginForm = () => (
-    <form>
-    <input type="text" value={userFields.username} onChange={actualizarUserFields('username')} placeholder="Username"/><br/>
-    <input type="password" value={userFields.password} onChange={actualizarUserFields('password')} placeholder="Password"/><br/>
-    <button type="submit" onClick={handleLogin}>Login</button>
-  </form>
-  )
+  const actualizaPreferencias = event => {
+    setShowAll(!showAll)
+  }
+
+  const noteFormRef = useRef()
+
+  const createNote = note => {
+    noteService.create(note)
+    noteFormRef.current.toggleVisible()
+  }
+
+  const loginForm = () => {
+    const showLoginForm = {display: loginVisible ? '' : 'none'}
+
+    return (      
+      <Togglable buttonLabel="login">
+        <LoginForm actualizarUserFields={actualizarUserFields} 
+                  handleLogin={handleLogin} 
+                  userFields={userFields}
+        />
+      </Togglable>
+    )
+  }
 
   const notesForm = () => (
     <>
@@ -118,12 +104,12 @@ const App = () => {
         notesToShow.map(note => <Note key={note.id} note={note} toggleImportance={() => toggleImportance(note.id)}/>)
       }
     </ul>
-    <form>
-    <input type="text" value={newNote.text} onChange={actualizarNewNote}/><br/>
-    <label><input type="checkbox" onChange={actualizaImportancia}/>Importancia de la nota</label><br/>
-    <button onClick={actualizaPreferencias}>{showAll ? ("Mostrar solo notas importantes") : ("Mostrar todas las notas")}</button><br/>
-    <button type="submit" onClick={addNote}>Save</button>
-    </form>
+    <Togglable buttonLabel="new note" ref={noteFormRef}>
+      <NoteForm 
+        createNote={createNote}
+      />
+      <button onClick={actualizaPreferencias}>{showAll ? ("Mostrar solo notas importantes") : ("Mostrar todas las notas")}</button><br/>
+    </Togglable>
   </>
   )
 
@@ -132,7 +118,7 @@ const App = () => {
       <h1>Notes</h1>
       <Notification message={errorMessage}/>
       {user === null && loginForm()}
-      {user !== null && notesForm()}
+      {!loginVisible && notesForm()}
       <Footer/>
     </div>
   );

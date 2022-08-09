@@ -9,6 +9,8 @@ import Notification from './components/Notification';
 import Agregar from './components/Agregar';
 import BlogForm from './components/BlogForm';
 import LoginForm from './components/LoginForm';
+import LoggedForm from './components/LoggedForm';
+import Togglable from './components/Togglable';
 
 function App() {
   const [user, setUser] = useState(null)
@@ -25,14 +27,24 @@ function App() {
     }
   })
 
-  const blogForm = () => <BlogForm setNotification={setNotification}/>
-  const loginForm = () => <LoginForm setUsuario={setUser} setNotification={setNotification}/>
+  const loginOption = () => (
+    <Togglable buttonLabel="login">
+      <LoginForm setUsuario={setUser} setNotification={setNotification}/>
+    </Togglable>
+  )
+
+  const loggedOption = () => (
+    <LoggedForm usuario={user} setUsuario={setUser}/>
+  )
 
   return (
     <div>
       <Notification text={notification.text} isSuccess={notification.isSuccess}/>
-      {user === null && loginForm()}
-      {user !== null && blogForm()}
+      
+      {user === null && loginOption()}
+      <Togglable buttonLabel="new blog">
+        <BlogForm setNotification={setNotification}/>
+      </Togglable>
     </div>
   );
 }

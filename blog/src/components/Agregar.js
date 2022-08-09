@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import blogService from '../services/blog'
-const Agregar = ({blogs, setBlogs, notifications}) => {
+const Agregar = ({blogs, setBlogs, notifications, testing=undefined}) => {
     const [fields, setFields] = useState({
         title: "",
         author: "",
@@ -40,6 +40,7 @@ const Agregar = ({blogs, setBlogs, notifications}) => {
     }
 
     const agregarBlog = async event => {
+        if(testing !== undefined) testing(fields)
         event.preventDefault()
         if(validar()){
             const existencia = existe(fields.title)
@@ -65,11 +66,11 @@ const Agregar = ({blogs, setBlogs, notifications}) => {
 
     return (
         <form onSubmit={agregarBlog}>
-            <input type="text" placeholder="Título" value={fields.title} onChange={getMyEscritura('title')}/>
-            <input type="text" placeholder="Autor" value={fields.author} onChange={getMyEscritura('author')}/>
-            <input type="text" placeholder="URL" value={fields.url} onChange={getMyEscritura('url')}/>
-            <input type="number" min={0} placeholder="Likes" value={fields.likes} onChange={getMyEscritura('likes')}/>
-            <button type="submit">Agregar</button>
+            <input type="text" placeholder="Título" id="blogTitleAddBlogForm" value={fields.title} onChange={getMyEscritura('title')}/>
+            <input type="text" placeholder="Autor" id="blogAuthorAddBlogForm" value={fields.author} onChange={getMyEscritura('author')}/>
+            <input type="text" placeholder="URL" id="blogUrlAddBlogForm" value={fields.url} onChange={getMyEscritura('url')}/>
+            <input type="number" min={0} placeholder="Likes" id="blogLikesAddBlogForm" value={fields.likes} onChange={getMyEscritura('likes')}/>
+            <button type="submit" id="agregarBlog">Agregar</button>
         </form>
     )
 }
