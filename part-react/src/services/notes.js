@@ -8,13 +8,11 @@ const setToken = newToken => {
 }
 
 const getAll = () => {
-    const nonExisting = {
-        id: 1000,
-        content: 'This note is not saved to server',
-        date: '2022-06-16',
-        important: true
+    const config = {
+        headers: {Authorization: token}
     }
-    return axios.get(baseUrl).then(response => response.data.concat(nonExisting))
+    
+    return axios.get(baseUrl, config).then(response => response.data)
 }
 const create = async newObject => {
     const config = {

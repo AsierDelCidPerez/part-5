@@ -20,6 +20,11 @@ app.use(express.json())
 app.use(cors()) // Permite conexiones cruzadas, es decir de diferentes dominios
 app.use(express.static('build'))
 
+if(process.env.NODE_ENV === 'test'){
+        const testRouter = require('./controllers/test')
+        app.use('/api/test', testRouter)
+}
+
 app.use('/api/notes', notesRouter)
 app.use('/api/users', userRouter)
 app.use('/api/login', loginRouter)

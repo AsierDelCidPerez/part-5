@@ -9,6 +9,7 @@ import loginService from './services/loginService'
 import LoginForm from './components/LoginForm';
 import Togglable from './components/Togglable';
 import NoteForm from './components/NoteForm';
+import LoggedOption from './components/LoggedOption';
 
 const App = () => {
   const [notes, setNotes] = useState([]);
@@ -20,17 +21,24 @@ const App = () => {
   const [showAll, setShowAll] = useState(true);
   const [loginVisible, setLoginVisible] = useState(false)
 
-  useEffect(() => {
-    noteService.getAll()
-      .then(response => setNotes(response));
-  }, [])
 
   useEffect(() => {
     const myUser = window.localStorage.getItem('loggedNoteappUser')
     if(myUser){
-      setUser(JSON.parse(myUser))
-      noteService.setToken(myUser.token)
+      const usuario = JSON.parse(myUser)
+      setUser(usuario)
+      noteService.setToken(usuario.token)
+      console.log(usuario.token)
     }
+  }, [])
+
+  const getAllNotes = () => {
+    noteService.getAll()
+    .then(response => setNotes(response));
+  }
+
+  useEffect(() => {
+    getAllNotes()
   }, [])
 
   const notesToShow = showAll ? notes : notes.filter(note => note.important===true)
@@ -79,15 +87,17 @@ const App = () => {
 
   const noteFormRef = useRef()
 
-  const createNote = note => {
-    noteService.create(note)
+  const createNote = async note => {
+    await noteService.create(note)
+    getAllNotes()
     noteFormRef.current.toggleVisible()
   }
 
   const loginForm = () => {
     const showLoginForm = {display: loginVisible ? '' : 'none'}
 
-    return (      
+    return (
+            
       <Togglable buttonLabel="login">
         <LoginForm actualizarUserFields={actualizarUserFields} 
                   handleLogin={handleLogin} 
@@ -113,12 +123,15 @@ const App = () => {
   </>
   )
 
+  const loggedForm = () => <LoggedOption user={user} setUser={setUser} />
+
   return (
     <div>
       <h1>Notes</h1>
       <Notification message={errorMessage}/>
+      {user !== null && loggedForm()}
       {user === null && loginForm()}
-      {!loginVisible && notesForm()}
+      {user !== null && notesForm()}
       <Footer/>
     </div>
   );

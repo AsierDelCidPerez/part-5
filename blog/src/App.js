@@ -40,7 +40,7 @@ function App() {
   return (
     <div>
       <Notification text={notification.text} isSuccess={notification.isSuccess}/>
-      
+      {user !== null && loggedOption()}
       {user === null && loginOption()}
       <Togglable buttonLabel="new blog">
         <BlogForm setNotification={setNotification}/>

@@ -9,7 +9,7 @@ notesRouter.delete('/:id', async (request, response) => {
 })
   
 const getTokenFrom = request => {
-    const auth = request.get('authorization')
+    const auth = request.get('Authorization')
     if(auth && auth.toLowerCase().startsWith('bearer')){
         return auth.substring(7)
     }
@@ -33,12 +33,13 @@ notesRouter.post('/', async (request, response) => {
         return response.status(401).json({error: "Token invalid or missing"})
     }
     const user = await User.findById(obj.id)
+    console.log(`Cuerpo de la solicitud: ${body}`)
     if(!body.content) return response.status(400).json({error: 'Content missing'})
     const note =  new Note({
         content: body.content,
         date: new Date(),
         important: body.important || false,
-        user: user.userId
+        user: user.id
     })
     const result = await note.save()
     // console.log(result)
@@ -48,13 +49,12 @@ notesRouter.post('/', async (request, response) => {
 })
 
 notesRouter.get('/', async (req, response) => {
-    /* const token = getTokenFrom(req)
-    const obj = jwt.verify(token, process.env.SECRET)
-    if(!obj){
+    const token = getTokenFrom(req)
+    if(!token){
         response.status(401).json({error: 'token missing or invalid'})
     }
-    const notes = await Note.find({user: obj.id}) */
-    const notes = await Note.find({}).populate('user')
+    const obj = jwt.verify(token, process.env.SECRET)
+    const notes = await Note.find({user: obj.id})
     response.json(notes)
 })
 

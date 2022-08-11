@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 
 const NoteForm = ({createNote}) => {
     const [newNote, setNewNote] = useState({
-        text : "a new note...",
+        text : "",
         important : false
     });
 
@@ -22,20 +22,21 @@ const NoteForm = ({createNote}) => {
 
     const addNote = async event => {
         event.preventDefault();
+        console.log(newNote.text)
         const noteObj = {
           content: newNote.text,
           date: new Date().toString(),
           important: newNote.important || false,
         };
-        createNote(noteObj)
-        setNewNote("a new note...");
+        await createNote(noteObj)
+        setNewNote("");
       }
 
     return (
         <form onSubmit={addNote}>
-            <input type="text" value={newNote.text} onChange={actualizarNewNote}/><br/>
+            <input type="text" value={newNote.text} placeholder="a new note..." onChange={actualizarNewNote} id="textFieldNoteForm"/><br/>
             <label><input type="checkbox" onChange={actualizaImportancia}/>Importancia de la nota</label><br/>
-            <button type="submit">Save</button>
+            <button type="submit" id="buttonSubmitNoteForm">Save</button>
         </form>
     )
 }
