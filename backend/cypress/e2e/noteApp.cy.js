@@ -1,15 +1,16 @@
-describe('Note app', () => {
+const url = 'http://localhost:3000'
 
+describe('Note app', () => {
     beforeEach(() => {
-      cy.visit('http://localhost:3001')
-      cy.request('POST', 'http://localhost:3001/api/test/reset')
+      cy.visit(url)
+      cy.request('POST', `${url}/api/test/reset`)
       const user = {
-        name: 'Global Administrator',
+        name: 'GAdministrator',
         username: 'root',
         password: 'root'
       }
-      cy.request('POST', 'http://localhost:3001/api/users/', user)
-      cy.visit('http://localhost:3001')
+      cy.request('POST', `${url}/api/users/`, user)
+      cy.visit(url)
     })
 
     it('getting the website', () => {
@@ -27,14 +28,29 @@ describe('Note app', () => {
       cy.get('#usernameFieldLoginForm').type('root')
       cy.get('#passwordFieldLoginForm').type('root')
       cy.get('#buttonSubmitLoginForm').click()
+      cy.contains("Logged in as root")
+    })
+
+    it('login fails with wrong password', () => {
+      cy.contains('login').click()
+      cy.get('#usernameFieldLoginForm').type('root')
+      cy.get('#passwordFieldLoginForm').type('1234')
+      cy.get('#buttonSubmitLoginForm').click()
+      cy.get('.error')
+        .should('contain', 'Username or password are invalid')
+        .and('have.css', 'color', 'rgb(255, 0, 0)')
+        .and('have.css', 'border-style', 'solid')
+      cy.get('html').should('not.contain', 'Logged in as root')
     })
 
     describe('when user logged in', () => {
       beforeEach(() => {
-        cy.contains('login').click()
-        cy.get('#usernameFieldLoginForm').type('root')
-        cy.get('#passwordFieldLoginForm').type('root')
-        cy.get('#buttonSubmitLoginForm').click()
+        cy.login({
+          username: 'root',
+          password: 'root',
+          url
+        })
+        cy.visit(url)
       })
       it('a user can create a note', () => {
         cy.contains('new note').click()
