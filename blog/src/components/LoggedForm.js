@@ -1,11 +1,11 @@
-const LoggedForm = ({usuario, setUsuario}) => {
+const LoggedForm = ({user, setUser}) => {
     const logOut = event => {
         window.localStorage.removeItem('BlogappUserLogin')
-        setUsuario(null)
+        setUser(null)
     }
     return (
         <div>
-            <p>Logged in as {usuario.username}</p><button onClick={logOut}>Log out</button>
+            <p>Logged in as {user.username}</p><button onClick={logOut}>Log out</button>
         </div>
     )
 }

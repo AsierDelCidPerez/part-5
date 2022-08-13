@@ -18,7 +18,9 @@
     "build": "react-scripts build",
     "server": "json-server -p3001 --watch db.json",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "cypress:open": "cypress open",
+    "start:test": "cross-env NODE_ENV=test node index.js"
   },
   "eslintConfig": {
     "extends": [

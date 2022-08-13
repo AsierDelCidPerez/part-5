@@ -37,9 +37,10 @@ const App = () => {
     .then(response => setNotes(response));
   }
 
-  useEffect(() => {
-    getAllNotes()
-  }, [])
+
+    useEffect(() => {
+      getAllNotes()
+    }, [])
 
   const notesToShow = showAll ? notes : notes.filter(note => note.important===true)
 

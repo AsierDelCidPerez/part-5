@@ -31,7 +31,6 @@ const Agregar = ({blogs, setBlogs, notifications, testing=undefined}) => {
     }
 
     const existe = title => {
-        console.log(title.trim().toLowerCase())
         let resultado = -1
         blogs.forEach(blog => {
             if(blog.title.trim().toLowerCase() === title.trim().toLowerCase()) resultado = blog.id

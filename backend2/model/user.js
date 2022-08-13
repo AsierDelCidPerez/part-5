@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema({
 userSchema.set('toJSON', {
     'transform' : (_, reqObj) => {
         reqObj.id = reqObj._id.toString()
-        delete reqObj.passwordHash
+       // delete reqObj.passwordHash
         delete reqObj._id
         delete reqObj.__v
     }

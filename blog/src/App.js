@@ -28,13 +28,13 @@ function App() {
   })
 
   const loginOption = () => (
-    <Togglable buttonLabel="login">
+    <Togglable buttonLabel="login" isShown={true}>
       <LoginForm setUsuario={setUser} setNotification={setNotification}/>
     </Togglable>
   )
 
   const loggedOption = () => (
-    <LoggedForm usuario={user} setUsuario={setUser}/>
+    <LoggedForm user={user} setUser={setUser}/>
   )
 
   return (
@@ -43,7 +43,7 @@ function App() {
       {user !== null && loggedOption()}
       {user === null && loginOption()}
       <Togglable buttonLabel="new blog">
-        <BlogForm setNotification={setNotification}/>
+        <BlogForm setNotification={setNotification} />
       </Togglable>
     </div>
   );

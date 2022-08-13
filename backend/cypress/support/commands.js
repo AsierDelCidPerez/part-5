@@ -34,3 +34,15 @@ Cypress.Commands.add('login', ({username, password, url}) => {
         cy.visit(url)
     })
 })
+
+Cypress.Commands.add('createNote', ({content, important, url}) => {
+    cy.request({
+        url: `${url}/api/notes`,
+        body: {content, important},
+        method: 'POST',
+        headers: {
+            Authorization: `bearer ${JSON.parse(localStorage.getItem('loggedNoteappUser')).token}`
+        }
+    })
+    cy.visit(url)
+})

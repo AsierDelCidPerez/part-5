@@ -27,11 +27,11 @@ const LoginForm = ({setUsuario, setNotification}) => {
     }
 
     return (
-        <form onSubmit={handleLogin}>
+        <form onSubmit={handleLogin} id="blogLoginForm">
             <Titulo text="Login"/>
-            <input type="text" value={userFields.username} onChange={updateUserFields('username')} placeholder="username"/><br/>
-            <input type="password" value={userFields.password} onChange={updateUserFields('password')} placeholder="password"/><br/>
-            <button type="submit">Login</button>
+            <input type="text" value={userFields.username} id="usernameFieldBlogLoginForm" onChange={updateUserFields('username')} placeholder="username"/><br/>
+            <input type="password" value={userFields.password} id="passwordFieldBlogLoginForm" onChange={updateUserFields('password')} placeholder="password"/><br/>
+            <button type="submit" id="submitButtonBlogLoginForm">Login</button>
         </form>
     )
 }

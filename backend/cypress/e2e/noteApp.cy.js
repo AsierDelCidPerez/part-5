@@ -57,6 +57,20 @@ describe('Note app', () => {
         cy.get('#textFieldNoteForm').type('a note created using Cypress')
         cy.get('#buttonSubmitNoteForm').click()
       })
+
+      describe('when a note is created', () => {
+        beforeEach(() => {
+          cy.createNote({content: 'first note', important: false, url})
+          cy.createNote({content: 'second note', important: false, url})
+          cy.createNote({content: 'third note', important: false, url})
+          cy.visit(url)
+        })
+        it('a user can change the importance of a note', () => {
+          cy.contains('second note').parent().find('button').as('theButton')
+          cy.get('@theButton').click()
+          cy.get('@theButton').should('contain', 'Make NOT important')
+        })
+      })
     })
 
 })

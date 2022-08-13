@@ -2,7 +2,6 @@ import Blog from './Blog'
 
 const Registro = ({blogs, setBlogs, notifications}) => {
     blogs.sort((a, b) => b.likes - a.likes)
-    console.log(blogs)
     return (
         <div>
             { 
